@@ -16,7 +16,7 @@
 
 ## 二、技术栈
 
-### 设备端（搭档负责）
+### 设备端 (Loopy-enginner负责）
 
 - ESP32-CAM
 - C / C++
@@ -24,7 +24,7 @@
 - 摄像头控制
 - Wi-Fi 与 HTTP 通信
 
-### 后端、网页与部署（我负责）
+### 后端、网页与部署（Pink-coder负责）
 
 - Python / Flask
 - HTML / CSS / JavaScript
