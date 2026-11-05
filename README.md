@@ -6,28 +6,28 @@
 
 ## 一、项目目标
 
-- 使用 ESP32-CAM 拍摄照片
-- 通过 Wi-Fi 将 JPEG 图片上传到服务器
-- 使用 Python 后端接收并保存图片
-- 开发网页，展示照片及拍摄时间
-- 使用 Nginx 和 Docker Compose 部署服务
-- 实现基础日志、健康检查和故障排查
-- 记录开发、部署和测试过程
+- [x] 使用 Python 后端接收并保存图片
+- [x] 开发网页，展示照片
+- [x] 实现网页端手动上传图片（用于硬件未到时的联调测试）
+- [x] 实现基础日志和健康检查
+- [ ] 使用 ESP32-CAM 拍摄照片
+- [ ] 通过 Wi-Fi 将 JPEG 图片上传到服务器
+- [ ] 网页展示照片及拍摄时间
+- [ ] 使用 Nginx 和 Docker Compose 部署服务
+- [ ] 记录开发、部署和测试过程
 
 ## 二、技术栈
 
-### 设备端 (Loopy-enginner负责）
-
+### 设备端（负责人 B 负责）
 - ESP32-CAM
 - C / C++
 - Arduino 框架或 ESP-IDF
 - 摄像头控制
 - Wi-Fi 与 HTTP 通信
 
-### 后端、网页与部署（Pink-coder负责）
-
+### 后端、网页与部署（负责人 A 负责）
 - Python / Flask
-- HTML / CSS / JavaScript
+- HTML / CSS / JavaScript（原生）
 - Linux / Ubuntu
 - Nginx
 - Docker / Docker Compose
@@ -36,64 +36,54 @@
 
 ## 三、项目目录
 
-```text
 esp32-cam-iot-platform/
-├── server/       # Python 后端 API
-├── web/          # 网页前端
-├── firmware/     # ESP32-CAM 设备端固件
-├── deploy/       # Docker、Nginx 和部署配置
-├── docs/         # 接口规范、设计文档和测试记录
-├── .gitignore    # Git 忽略规则
-└── README.md     # 项目说明
-```
+├── server/             # Python 后端 API 与网页前端
+│   ├── app.py          # Flask 核心代码
+│   ├── index.html      # 照片展示与上传网页
+│   ├── requirements.txt# Python 依赖
+│   └── uploads/        # 图片持久化目录（由 .gitkeep 占位）
+├── firmware/           # ESP32-CAM 设备端固件
+├── deploy/             # Docker、Nginx 和部署配置
+├── docs/               # 接口规范、设计文档和测试记录
+├── .gitignore          # Git 忽略规则
+└── README.md           # 项目说明
 
 ## 四、双方分工
 
 ### 负责人 A：后端、网页与 DevOps
-
-- 开发图片上传接口
-- 保存和管理上传的图片
-- 开发照片展示网页
-- 配置 Nginx 和 Docker Compose
-- 将服务部署到阿里云 ECS
-- 负责日志、健康检查和部署文档
+- [x] 开发图片上传接口（接收原始 JPEG 二进制）
+- [x] 保存和管理上传的图片（UUID 命名防冲突）
+- [x] 开发照片展示网页并支持手动上传
+- [x] 配置健康检查接口
+- [ ] 配置 Nginx 和 Docker Compose
+- [ ] 将服务部署到阿里云 ECS
 
 ### 负责人 B：硬件与嵌入式软件
+- [ ] 选择并调试 ESP32-CAM 开发板
+- [ ] 学习 C / C++ 和设备端开发
+- [ ] 实现摄像头拍照
+- [ ] 实现 Wi-Fi 连接和 HTTP 图片上传
+- [ ] 处理网络异常、超时和重试
+- [ ] 记录串口日志并协助联调
 
-- 选择并调试 ESP32-CAM 开发板
-- 学习 C / C++ 和设备端开发
-- 实现摄像头拍照
-- 实现 Wi-Fi 连接和 HTTP 图片上传
-- 处理网络异常、超时和重试
-- 记录串口日志并协助联调
+## 五、API 接口（已实现）
 
-### 双方共同完成
-
-- 确定设备端与服务器端的接口规范
-- 使用 Git / GitHub 协作
-- 完成端到端测试
-- 排查并修复问题
-- 整理项目文档和演示材料
-
-## 五、计划中的 API
-
-| 接口 | 功能 |
-|---|---|
-| GET /api/health | 检查后端服务状态 |
-| POST /api/upload | 上传 JPEG 图片 |
-| GET /api/photos | 获取照片列表 |
-| GET /images/{filename} | 查看已保存的图片 |
-
-以上接口为计划中的设计，具体请求格式和响应结构以 `docs/` 中的接口规范为准。
+| 接口 | 方法 | 功能 | 状态 |
+|---|---|---|---|
+| `/api/health` | GET | 检查后端服务状态 | ✅ 已实现 |
+| `/api/upload` | POST | 上传 JPEG 图片 (`Content-Type: image/jpeg`) | ✅ 已实现 |
+| `/api/photos` | GET | 获取照片列表 | ✅ 已实现 |
+| `/images/{filename}` | GET | 查看已保存的图片 | ✅ 已实现 |
 
 ## 六、项目进度
 
 - [x] 创建 GitHub 仓库
 - [x] 创建基础目录结构
-- [ ] 完善接口规范
-- [ ] 实现后端图片上传与保存
+- [x] 实现后端图片上传、列表、读取与健康检查
+- [x] 实现基础照片展示网页与手动上传功能
+- [x] 完善 `.gitignore` 防止运行时图片与敏感信息泄露
+- [ ] 完善接口规范文档 (docs/)
 - [ ] 实现 ESP32-CAM 拍照和上传
-- [ ] 实现照片展示网页
 - [ ] 完成设备与服务器联调
 - [ ] 使用 Docker Compose 部署
 - [ ] 完成异常测试与项目文档
@@ -102,9 +92,9 @@ esp32-cam-iot-platform/
 
 - 不要将 Wi-Fi 密码、服务器密码、API Token 或私钥提交到 GitHub
 - 不要将 `.env` 等包含真实凭据的文件提交到仓库
-- 对上传文件限制大小并校验格式
+- 对上传文件限制大小并校验格式（当前已校验基础格式，限流待补充）
 - 公网部署时配置 HTTPS 和必要的身份验证
-- 照片等运行数据应保存在独立的数据目录中，不要直接提交到代码仓库
+- 照片等运行数据应保存在独立的数据目录中，已配置 `.gitignore` 忽略
 
 ## 八、项目原则
 
