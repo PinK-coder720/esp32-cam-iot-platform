@@ -24,3 +24,13 @@ Thumbs.db
 # Build artifacts
 build/
 dist/
+!server/uploads/.gitkeep
+# 忽略所有 jpg 图片
+*.jpg
+*.jpeg
+# 忽略上传目录（更安全，因为里面可能还有别的临时文件）
+server/uploads/
+# 忽略 Python 虚拟环境和缓存
+venv/
+__pycache__/
+*.pyc
