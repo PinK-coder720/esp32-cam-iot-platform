@@ -10,10 +10,10 @@
 - [x] 开发网页，展示照片
 - [x] 实现网页端手动上传图片（用于硬件未到时的联调测试）
 - [x] 实现基础日志和健康检查
+- [x] 使用 Nginx 和 Docker Compose 部署服务
 - [ ] 使用 ESP32-CAM 拍摄照片
 - [ ] 通过 Wi-Fi 将 JPEG 图片上传到服务器
 - [ ] 网页展示照片及拍摄时间
-- [ ] 使用 Nginx 和 Docker Compose 部署服务
 - [ ] 记录开发、部署和测试过程
 
 ## 二、技术栈
@@ -29,24 +29,28 @@
 - Python / Flask
 - HTML / CSS / JavaScript（原生）
 - Linux / Ubuntu
-- Nginx
-- Docker / Docker Compose
+- Nginx（反向代理与网关）
+- Docker / Docker Compose（容器化部署）
 - Git / GitHub
 - 日志、健康检查与服务排障
 
 ## 三、项目目录
 
+```text
 esp32-cam-iot-platform/
 ├── server/             # Python 后端 API 与网页前端
 │   ├── app.py          # Flask 核心代码
 │   ├── index.html      # 照片展示与上传网页
-│   ├── requirements.txt# Python 依赖
+│   ├── Dockerfile      # 后端镜像构建文件
+│   ├── requirements.txt# Python 依赖清单
 │   └── uploads/        # 图片持久化目录（由 .gitkeep 占位）
 ├── firmware/           # ESP32-CAM 设备端固件
-├── deploy/             # Docker、Nginx 和部署配置
-├── docs/               # 接口规范、设计文档和测试记录
+├── deploy/             # 部署配置
+│   └── nginx.conf      # Nginx 反向代理配置
+├── docker-compose.yml  # 多容器一键编排配置
 ├── .gitignore          # Git 忽略规则
 └── README.md           # 项目说明
+```
 
 ## 四、双方分工
 
@@ -55,8 +59,9 @@ esp32-cam-iot-platform/
 - [x] 保存和管理上传的图片（UUID 命名防冲突）
 - [x] 开发照片展示网页并支持手动上传
 - [x] 配置健康检查接口
-- [ ] 配置 Nginx 和 Docker Compose
-- [ ] 将服务部署到阿里云 ECS
+- [x] 配置 Nginx 反向代理与 Docker Compose 编排
+- [x] 将服务部署到阿里云 ECS
+- [ ] 完善接口限流与安全校验
 
 ### 负责人 B：硬件与嵌入式软件
 - [ ] 选择并调试 ESP32-CAM 开发板
@@ -75,20 +80,33 @@ esp32-cam-iot-platform/
 | `/api/photos` | GET | 获取照片列表 | ✅ 已实现 |
 | `/images/{filename}` | GET | 查看已保存的图片 | ✅ 已实现 |
 
-## 六、项目进度
+## 六、快速启动 (Quick Start)
+
+本项目已完全容器化，确保服务器已安装 Docker 与 Docker Compose。
+
+在项目根目录下执行：
+```bash
+docker compose up -d
+```
+启动后：
+- 前端与 API 入口：`http://<服务器公网IP>/`
+- 图片数据将持久化保存在宿主机的 `./server/uploads` 目录。
+
+## 七、项目进度
 
 - [x] 创建 GitHub 仓库
 - [x] 创建基础目录结构
 - [x] 实现后端图片上传、列表、读取与健康检查
 - [x] 实现基础照片展示网页与手动上传功能
 - [x] 完善 `.gitignore` 防止运行时图片与敏感信息泄露
+- [x] 使用 Docker Compose 部署 Nginx 与 Flask
+- [x] 完成数据持久化挂载测试
 - [ ] 完善接口规范文档 (docs/)
 - [ ] 实现 ESP32-CAM 拍照和上传
 - [ ] 完成设备与服务器联调
-- [ ] 使用 Docker Compose 部署
 - [ ] 完成异常测试与项目文档
 
-## 七、安全注意事项
+## 八、安全注意事项
 
 - 不要将 Wi-Fi 密码、服务器密码、API Token 或私钥提交到 GitHub
 - 不要将 `.env` 等包含真实凭据的文件提交到仓库
@@ -96,7 +114,7 @@ esp32-cam-iot-platform/
 - 公网部署时配置 HTTPS 和必要的身份验证
 - 照片等运行数据应保存在独立的数据目录中，已配置 `.gitignore` 忽略
 
-## 八、项目原则
+## 九、项目原则
 
 - 先完成最小可运行版本，再逐步增加功能
 - 接口先约定，再分别开发，最后联调
